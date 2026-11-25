@@ -1,0 +1,9 @@
+# Reference template folder
+demos/
+
+# Raw source images in root (organized copies live in assets/)
+/*.jpg
+
+# OS files
+.DS_Store
+Thumbs.db

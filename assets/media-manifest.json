@@ -1,0 +1,10 @@
+{
+  "mode": "scenes",
+  "poster": "./assets/scenes/scene-01.jpg",
+  "scenes": [
+    "./assets/scenes/scene-01.jpg",
+    "./assets/scenes/scene-02.jpg",
+    "./assets/scenes/scene-03.jpg",
+    "./assets/scenes/scene-04.jpg"
+  ]
+}
