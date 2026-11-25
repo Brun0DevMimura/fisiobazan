@@ -21,7 +21,7 @@
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canvas = document.getElementById('cinema-canvas');
-  const ctx = canvas.getContext('2d', { alpha: false });
+  const ctx = canvas.getContext('2d');
   const stage = document.getElementById('cinema-stage');
   const header = document.getElementById('site-header');
   const scrollCue = document.getElementById('scroll-cue');
@@ -64,11 +64,10 @@
   }
 
   function render(progress) {
+    if (!images.length || !images[0] || !images[0].complete || !images[0].naturalWidth) return;
     const p = Math.max(0, Math.min(1, progress));
     ctx.fillStyle = '#0B1F22';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (!images.length) return;
 
     if (manifest.mode === 'frames') {
       const idx = Math.min(images.length - 1, Math.round(p * (images.length - 1)));
@@ -91,11 +90,12 @@
     const i = Math.min(count - 2, Math.floor(scaled));
     const localT = scaled - i; // 0..1 inside segment
 
-    // Subtle alternating pan & dolly zoom per scene (disabled under reduced motion)
+    // Subtle alternating pan & dolly zoom per scene (softened under reduced motion)
     const dir = i % 2 === 0 ? 1 : -1;
-    const scaleA = prefersReducedMotion ? 1.0 : 1.0 + localT * 0.085;
-    const panXA = prefersReducedMotion ? 0 : dir * (localT - 0.5) * 0.025;
-    const panYA = prefersReducedMotion ? 0 : (localT - 0.5) * -0.015;
+    const motionFactor = prefersReducedMotion ? 0.5 : 1.0;
+    const scaleA = 1.0 + localT * 0.10 * motionFactor;
+    const panXA = dir * (localT - 0.5) * 0.03 * motionFactor;
+    const panYA = (localT - 0.5) * -0.018 * motionFactor;
 
     drawCover(images[i], scaleA, panXA, panYA, 1);
 
@@ -104,8 +104,8 @@
     if (localT > fadeStart && images[i + 1]) {
       const fadeT = (localT - fadeStart) / (1 - fadeStart);
       const eased = fadeT * fadeT * (3 - 2 * fadeT); // smoothstep
-      const scaleB = prefersReducedMotion ? 1.0 : 1.04 - eased * 0.04;
-      const panXB = prefersReducedMotion ? 0 : -dir * (1 - eased) * 0.015;
+      const scaleB = 1.0 + (0.05 - eased * 0.05) * motionFactor;
+      const panXB = -dir * (1 - eased) * 0.018 * motionFactor;
       drawCover(images[i + 1], scaleB, panXB, 0, eased);
     }
   }
@@ -201,9 +201,9 @@
       window.gsap.registerPlugin(window.ScrollTrigger);
     }
 
-    if (!prefersReducedMotion && typeof window.Lenis !== 'undefined') {
+    if (typeof window.Lenis !== 'undefined') {
       lenis = new window.Lenis({
-        duration: 1.15,
+        duration: prefersReducedMotion ? 0.85 : 1.15,
         smoothWheel: true,
         touchMultiplier: 1.4
       });
@@ -235,7 +235,7 @@
       updateActs(progress);
     };
 
-    if (hasGSAP && !prefersReducedMotion) {
+    if (hasGSAP) {
       window.ScrollTrigger.create({
         trigger: stage,
         start: 'top top',

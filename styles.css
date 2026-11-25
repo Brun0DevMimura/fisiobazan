@@ -28,7 +28,7 @@ html {
 }
 
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   line-height: 1.6;
 }
 
@@ -213,7 +213,7 @@ a {
   height: 100svh;
   width: 100%;
   overflow: hidden;
-  background: #0B1F22;
+  background: #0B1F22 url('./assets/scenes/scene-01.jpg') center / cover no-repeat;
 }
 
 #cinema-canvas {
@@ -1037,18 +1037,9 @@ a {
   }
 }
 
-/* Reduced Motion — keep acts reachable, disable kinetic zoom/transitions */
+/* Reduced Motion — tone down motion softly without disabling editorial transitions */
 @media (prefers-reduced-motion: reduce) {
-  .act,
-  .act.is-active {
-    transition: none;
-    transform: none;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
   .scroll-cue-line::after {
-    animation: none;
+    animation-duration: 4s;
   }
 }
