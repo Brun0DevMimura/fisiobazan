@@ -1,10 +1,15 @@
-{
-  "mode": "scenes",
-  "poster": "./assets/scenes/scene-01.jpg",
-  "scenes": [
-    "./assets/scenes/scene-01.jpg",
-    "./assets/scenes/scene-02.jpg",
-    "./assets/scenes/scene-03.jpg",
-    "./assets/scenes/scene-04.jpg"
-  ]
+﻿{
+    "mode":  "frames",
+    "poster":  "./assets/poster.webp",
+    "bgColor":  "#B6A58A",
+    "desktop":  {
+                    "pad":  4,
+                    "pathPattern":  "./assets/frames/desktop/frame_{index}.webp",
+                    "count":  209
+                },
+    "mobile":  {
+                   "pad":  4,
+                   "pathPattern":  "./assets/frames/mobile/frame_{index}.webp",
+                   "count":  149
+               }
 }
